@@ -14,7 +14,8 @@ warnings.filterwarnings('ignore')
 def main(options):
 
     flag_invert = options.invert
-    #declaratie gebruikte variabelen
+    fullscreen = options.fullscreen
+
     persons_in = 0
     line_trail = dict()
 
@@ -98,7 +99,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--invert', type=bool, default=True, help='binnen <-> buiten --> buiten <-> binnen')
     parser.add_argument('--fullscreen', type=bool, default=False, help='Fullscreen the video output')
-    parser.add_argument('--video', type=bool, default=False,help='Do you want to display and save video from the actions going on in the backgroud')
     parser.add_argument('--threshold', type=float, default=0.65,help='minimum allowed value for the threshold')
     options = parser.parse_args()
     main(options)
