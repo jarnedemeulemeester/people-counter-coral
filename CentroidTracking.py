@@ -2,12 +2,8 @@ from edgetpu.detection.engine import DetectionEngine
 import argparse
 from PIL import Image
 from timeit import time
-from PIL import ImageDraw
-import numpy as np
 import cv2
 import warnings
-import os
-import datetime
 from tools.CentroidTracker import CentroidTracker
 from collections import deque
 import threading
@@ -39,7 +35,7 @@ def main(options):
             line1 = int(height/2 - 50)
 
             # Run inference.
-            detections = engine.DetectWithImage(img, threshold=options.threshold, keep_aspect_ratio=True, relative_coord=False, top_k=10,resample=Image.NEAREST) #BICUBIC
+            detections = engine.detect_with_image(img, threshold=options.threshold, keep_aspect_ratio=True, relative_coord=False, top_k=10,resample=Image.NEAREST) #BICUBIC
 
             boxs =[]
 
@@ -52,12 +48,10 @@ def main(options):
             objects = ct.update(boxs)
 
             for (objectID, centroid) in objects.items():
-                #line_order[objectID] = deque(maxlen=2)
                 if objectID not in line_trail.keys():
                     line_trail[objectID] = deque(maxlen=2)
                 cv2.putText(frame, str(objectID), (centroid[0] - 10, centroid[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255),4)
                 cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
-                #cv2.line(frame, (0, centroid[2]), (width, centroid[2]), (255, 0, 0), 2)
                 center = (centroid[1], centroid[2])
                 line_trail[objectID].appendleft(center)
                 try:
