@@ -35,7 +35,7 @@ class RecordingThread(threading.Thread):
 
 
 class VideoCamera(object):
-    def __init__(self, threshold=0.65, inverted=False, bbox=False, accuracy=False, video_status = False):
+    def __init__(self, threshold=0.65, inverted=False, bbox=False,crossing = False, accuracy=False, video_status = False):
         # Open a camera
         self.cap = cv2.VideoCapture(1)
 
@@ -44,7 +44,9 @@ class VideoCamera(object):
         self.bbox = bbox
         self.accuracy = accuracy
         self.video_status = video_status
-
+        self.crossing = crossing
+        self.persons_in = 0
+        self.line_trail = dict()
         self.engine = DetectionEngine('model_tflite/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite')
         self.ct = CentroidTracker()
 
@@ -60,8 +62,6 @@ class VideoCamera(object):
 
     def get_frame(self):
         ret, frame = self.cap.read()
-        persons_in = 0
-        line_trail = dict()
 
         if ret:
 
@@ -90,46 +90,46 @@ class VideoCamera(object):
             objects = self.ct.update(boxs)
 
             for (objectID, centroid) in objects.items():
-                if objectID not in line_trail.keys():
-                    line_trail[objectID] = deque(maxlen=2)
+                if objectID not in self.line_trail.keys():
+                    self.line_trail[objectID] = deque(maxlen=2)
                 if self.bbox:
                     cv2.putText(frame, str(objectID), (centroid[0] - 10, centroid[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                 (0, 255, 255), 4)
                     cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
                 center = (centroid[1], centroid[2])
-                line_trail[objectID].appendleft(center)
+                self.line_trail[objectID].appendleft(center)
                 try:
-                    diff = abs(line_trail[objectID][0][0] - line_trail[objectID][1][0])
+                    diff = abs(self.line_trail[objectID][0][0] - self.line_trail[objectID][1][0])
                     if diff < 60:
-                        if line_trail[objectID][0][1] < int(line1) and line_trail[objectID][1][1] > int(line1):
+                        if self.line_trail[objectID][0][1] < int(line1) and self.line_trail[objectID][1][1] > int(line1):
                             if self.flag_inverted:
-                                persons_in += 1
+                                self.persons_in += 1
                                 # publish = threading.Thread(target=(lambda: publisher.publish_to_topic(data = ("+1,%s,%s" % (datetime.datetime.now(),device)))))
                             else:
-                                persons_in -= 1
+                                self.persons_in -= 1
                                 # publish = threading.Thread(target=(lambda: publisher.publish_to_topic(data = ("-1,%s,%s" % (datetime.datetime.now(),device)))))
 
-                        elif line_trail[objectID][1][1] < int(line1) and line_trail[objectID][0][1] > int(line1):
+                        elif self.line_trail[objectID][1][1] < int(line1) and self.line_trail[objectID][0][1] > int(line1):
                             if self.flag_inverted:
-                                persons_in -= 1
+                                self.persons_in -= 1
                                 # publish = threading.Thread(target=(lambda: publisher.publish_to_topic(data = ("-1,%s,%s" % (datetime.datetime.now(),device)))))
                             else:
-                                persons_in += 1
+                                self.persons_in += 1
                                 # publish = threading.Thread(target=(lambda: publisher.publish_to_topic(data = ("+1,%s,%s" % (datetime.datetime.now(),device)))))
                         # if publish:
                         # publish.start()
                         # publish = None
                 except Exception as Ex:
-                    pass  # niet nodig om heir iets af te handelen :)
+                    print(Ex)
 
             if self.video_status:
                 frame = cv2.copyMakeBorder(frame, top=0, bottom=48, left=0, right=0, borderType=cv2.BORDER_CONSTANT,
                                            value=0)
-                cv2.putText(frame, "Binnen: %s" % persons_in, (10, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                cv2.putText(frame, "Binnen: %s" % self.persons_in, (10, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
                             (255, 255, 255), lineType=cv2.LINE_AA, thickness=2)
                 cv2.putText(frame, "FPS: %d" % (1. / (time.time() - t1)), (260, height + 32), cv2.FONT_HERSHEY_SIMPLEX,
                             1.0, (255, 255, 255), lineType=cv2.LINE_AA, thickness=2)
-                cv2.line(frame, (0, line1), (width, line1), (255, 0, 144), 2)
+            if self.crossing: cv2.line(frame, (0, line1), (width, line1), (255, 0, 144), 2)
         return cv2.imencode('.jpg', frame)[1].tostring()
 
     def toggle_video_status(self):
@@ -140,6 +140,9 @@ class VideoCamera(object):
 
     def toggle_accuracy(self):
         self.accuracy = not self.accuracy
+
+    def toggle_crossing(self):
+        self.crossing = not self.crossing
 
 
 def start_record(self):

@@ -1,15 +1,19 @@
 <html>
 <head>
-  <title>Streaming Video Recorder</title>
+  <title>Debugging Interface</title>
+
 </head>
 <body>
-  <h1>Streaming Video Recorder</h1>
-  <div id="recorder">
-    <button id="record">Record</button>
-    <button id="stop">Stop</button>
-    <a id="download"></a>
-    <script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>
-  </div>
+  <h1>People counter debugging</h1>
+
   <img id="video" src="{{ url_for('video_viewer') }}">
+
+  <div id="recorder">
+    <button id="Videostats">Video Stats</button>
+    <button id="Bbox">Boudingbox</button>
+    <button id="Accuracy">Accuracy</button>
+    <button id="Crossing">Show Crossing</button>
+  </div>
 </body>
+<script type="text/javascript" src="{{ url_for('static', filename='backend.js') }}"></script>
 </html>

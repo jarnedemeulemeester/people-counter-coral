@@ -52,9 +52,25 @@ def video_stream():
 
 @app.route('/video_viewer')
 def video_viewer():
-    return Response(video_stream(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(video_stream(),mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/toggle', methods=['POST'])
+def toggle_video():
+    json = request.get_json()
+    toggle = json['toggle']
+    if toggle == "VideoStats":
+        video_camera.toggle_video_status()
+    elif toggle == "Bbox":
+        video_camera.toggle_bbox()
+    elif toggle == "Crossing":
+        video_camera.toggle_crossing()
+    elif toggle == "Accuracy":
+        video_camera.toggle_accuracy()
+    return  jsonify({'success':True}), 200, {'ContentType':'application/json'}
+
+
+
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True, debug = True)
+    app.run(host='0.0.0.0', threaded=True)
