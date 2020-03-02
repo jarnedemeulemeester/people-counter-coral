@@ -5,10 +5,17 @@
 </head>
 <body>
   <h1>People counter debugging</h1>
+  <div id="recorder">
+    <button id="record">Record</button>
+    <button id="stop">Stop</button>
+    <a id="download"></a>
+    <script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>
+  </div>
 
   <img id="video" src="{{ url_for('video_viewer') }}">
 
-  <div id="recorder">
+  <div id="Configuration">
+
     <button id="Videostats">Video Stats</button>
     <button id="Bbox">Boudingbox</button>
     <button id="Accuracy">Accuracy</button>
