@@ -16,19 +16,9 @@ warnings.filterwarnings('ignore')
 
 
 def main(options):
-    # management flags
-    try:
-        device = str(os.environ['device_id'])
-
-        if not device:
-            print("Warning: There is no device specified %s" % device)
-            device = "Coral-1"
-    except:
-        pass
 
     flag_invert = options.invert
     #declaratie gebruikte variabelen
-    t1 =0.0
     persons_in = 0
     line_trail = dict()
 
@@ -100,8 +90,8 @@ def main(options):
                         print("Exception: %s" %Ex)
 
             frame = cv2.copyMakeBorder(frame, top=0, bottom=48, left=0, right=0, borderType=cv2.BORDER_CONSTANT,value=0)
-            cv2.putText(frame, "Binnen: %s" % persons_in, (10, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255),lineType=cv2.LINE_AA)
-            cv2.putText(frame, "FPS: %d" % (1. / (time.time() - t1)), (260, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255),lineType=cv2.LINE_AA)
+            cv2.putText(frame, "Binnen: %s" % persons_in, (10, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255),lineType=cv2.LINE_AA,thickness=2)
+            cv2.putText(frame, "FPS: %d" % (1. / (time.time() - t1)), (260, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255),lineType=cv2.LINE_AA,thickness=2)
             cv2.line(frame,(0, line1), (width, line1), (255, 0, 144), 2)
             cv2.imshow('Visualisation', frame)
 
