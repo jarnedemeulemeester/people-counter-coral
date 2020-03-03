@@ -2,19 +2,14 @@ var buttonVideoStats = document.getElementById("Videostats");
 var buttonBbox = document.getElementById("Bbox");
 var buttonAccuracy = document.getElementById("Accuracy");
 var buttonCrossing = document.getElementById("Crossing");
-var buttonRecord = document.getElementById("record");
-var buttonStop = document.getElementById("stop");
+var buttonRecord = document.getElementById("reboot");
+var buttonStop = document.getElementById("shutdown");
 
 //color picker input
-var colorForeground = document.getElementbyId("VideoStatsFgColor")
-var colorBackground = document.getElementbyId("VideoStatsBgColor")
-var colorBbox = document.getElementbyId("BboxColor")
-var colorCrossing = document.getElementById("CrossingColor")
 
-buttonStop.disabled = true;
 
 buttonVideoStats.onclick = function () {
-    console.log("Button VideoStats - pressed")
+    console.log("Button VideoStats - pressed");
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
@@ -28,7 +23,7 @@ buttonVideoStats.onclick = function () {
     xhr.send(JSON.stringify({toggle: "VideoStats"}));
 };
 buttonBbox.onclick = function () {
-    console.log("Button Bbox - pressed ")
+    console.log("Button Bbox - pressed ");
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
@@ -42,7 +37,7 @@ buttonBbox.onclick = function () {
     xhr.send(JSON.stringify({toggle: "Bbox"}));
 };
 buttonAccuracy.onclick = function () {
-    console.log("Button Accuracy - pressed ")
+    console.log("Button Accuracy - pressed ");
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
@@ -57,7 +52,7 @@ buttonAccuracy.onclick = function () {
 };
 
 buttonCrossing.onclick = function () {
-    console.log("Button Crossing - pressed")
+    console.log("Button Crossing - pressed");
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
@@ -72,15 +67,7 @@ buttonCrossing.onclick = function () {
 };
 
 buttonRecord.onclick = function () {
-    // var url = window.location.href + "record_status";
-    buttonRecord.disabled = true;
-    buttonStop.disabled = false;
-
-    // disable download link
-    var downloadLink = document.getElementById("download");
-    downloadLink.text = "";
-    downloadLink.href = "";
-
+    console.log("restart");
     // XMLHttpRequest
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
@@ -88,28 +75,21 @@ buttonRecord.onclick = function () {
             // alert(xhr.responseText);
         }
     }
-    xhr.open("POST", "/record_status");
+    xhr.open("POST", "/board_status");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({status: "true"}));
+    xhr.send(JSON.stringify({status: "Reboot"}));
 };
 
 buttonStop.onclick = function () {
-    buttonRecord.disabled = false;
-    buttonStop.disabled = true;
-
+    console.log("shutdown");
     // XMLHttpRequest
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
-
-            // enable download link
-            var downloadLink = document.getElementById("download");
-            downloadLink.text = "Download Video";
-            downloadLink.href = "/static/video.avi";
         }
     }
-    xhr.open("POST", "/record_status");
+    xhr.open("POST", "/board_status");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({status: "false"}));
+    xhr.send(JSON.stringify({status: "Shutdown"}));
 };

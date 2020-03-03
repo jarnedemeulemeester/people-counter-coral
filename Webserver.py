@@ -1,5 +1,8 @@
 from flask import Flask, render_template, Response, jsonify, request
 from Camera import VideoCamera
+import os
+import logging
+
 
 app = Flask(__name__)
 
@@ -12,22 +15,17 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/record_status', methods=['POST'])
-def record_status():
-    global video_camera
-    if video_camera == None:
-        video_camera = VideoCamera()
-
+@app.route('/board_status', methods=['post'])
+def device_handler():
     json = request.get_json()
-
     status = json['status']
 
-    if status == "true":
-        video_camera.start_record()
-        return jsonify(result="started")
-    else:
-        video_camera.stop_record()
-        return jsonify(result="stopped")
+    if status == "Shutdown":
+        os.system('sudo shutdown now')
+    elif status == "Reboot":
+        os.system('sudo reboot')
+
+    return jsonify({'success': True}), 200, {'ContentType': 'application/json'}
 
 
 def video_stream():
@@ -92,4 +90,4 @@ def change_color():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True, debug=True)
+    app.run(host='0.0.0.0', threaded=True)
