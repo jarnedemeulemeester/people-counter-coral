@@ -35,9 +35,15 @@ class RecordingThread(threading.Thread):
 
 
 class VideoCamera(object):
-    def __init__(self, threshold=0.65, inverted=False, bbox=False,crossing = False, accuracy=False, video_status = False):
+    def __init__(self, threshold=0.65, inverted=False, bbox=False,crossing = False, accuracy=False, video_status = False,
+                 back_color = (0,0,0), fore_color = (0,0,255), bbox_color =(0,0,255), crossing_color = (0,0,255)):
         # Open a camera
         self.cap = cv2.VideoCapture(1)
+        #colors
+        self.video_back_color = back_color
+        self.video_foreground_color = fore_color
+        self.bbox_color = bbox_color
+        self.crossing_color = crossing_color
 
         self.flag_inverted = inverted
         self.threshold = threshold
@@ -81,10 +87,10 @@ class VideoCamera(object):
                 if obj.label_id == 0:
                     box = obj.bounding_box.flatten().tolist()
                     if self.bbox:
-                        cv2.rectangle(frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (0, 255, 255), 5)
+                        cv2.rectangle(frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),self.bbox_color, 5)
                     #if self.accuracy:
                         cv2.putText(frame, str(obj.score), (int(box[0]) + 10, int(box[1] - 10)),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+                                    cv2.FONT_HERSHEY_SIMPLEX, 1, self.bbox_color, 2)
                     boxs.append(box)
 
             objects = self.ct.update(boxs)
@@ -124,12 +130,12 @@ class VideoCamera(object):
 
             if self.video_status:
                 frame = cv2.copyMakeBorder(frame, top=0, bottom=48, left=0, right=0, borderType=cv2.BORDER_CONSTANT,
-                                           value=0)
+                                           value=self.video_back_color)
                 cv2.putText(frame, "Binnen: %s" % self.persons_in, (10, height + 32), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
-                            (255, 255, 255), lineType=cv2.LINE_AA, thickness=2)
+                            self.video_foreground_color, lineType=cv2.LINE_AA, thickness=2)
                 cv2.putText(frame, "FPS: %d" % (1. / (time.time() - t1)), (260, height + 32), cv2.FONT_HERSHEY_SIMPLEX,
-                            1.0, (255, 255, 255), lineType=cv2.LINE_AA, thickness=2)
-            if self.crossing: cv2.line(frame, (0, line1), (width, line1), (255, 0, 144), 2)
+                            1.0, self.video_foreground_color, lineType=cv2.LINE_AA, thickness=2)
+            if self.crossing: cv2.line(frame, (0, line1), (width, line1), self.crossing_color, 2)
         return cv2.imencode('.jpg', frame)[1].tostring()
 
     def toggle_video_status(self):
@@ -143,6 +149,23 @@ class VideoCamera(object):
 
     def toggle_crossing(self):
         self.crossing = not self.crossing
+
+    def change_video_background_color(self, color):
+        self.video_back_color = self.convert_hext_to_rgb(color)
+
+    def change_video_foreground_color(self, color):
+        self.video_foreground_color = self.convert_hext_to_rgb(color)
+
+    def change_bbox_color(self, color):
+        self.bbox_color = self.convert_hext_to_rgb(color)
+
+    def change_crossing_color(self,color):
+        self.crossing_color = self.convert_hext_to_rgb(color)
+
+    @staticmethod
+    def convert_hext_to_rgb(color):
+        h = color.lstrip('#')
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
 def start_record(self):

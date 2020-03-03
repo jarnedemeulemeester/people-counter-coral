@@ -73,17 +73,15 @@ def change_color():
     json = request.get_json()
     ColorPicker = json['ColorPicker']
     Color = json['Color']
-
     if ColorPicker == "VideoStatsFgColor":
-        print("background video stats")
+        video_camera.change_video_foreground_color(Color)
     elif ColorPicker == "VideoStatsBgColor":
-        print("forgebround video stats")
+        video_camera.change_video_background_color(Color)
     elif ColorPicker == "BboxColor":
-        print("bbox")
+        video_camera.change_bbox_color(Color)
     elif ColorPicker == "CrossingColor":
-        print("crossing")
-    print(str(Color))
-
+        video_camera.change_crossing_color(Color)
+    return  jsonify({'success':True}), 200, {'ContentType':'application/json'}
 
 
 
