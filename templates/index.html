@@ -1,26 +1,146 @@
 <html>
 <head>
   <title>Debugging Interface</title>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='screen.css') }}">
 </head>
+<style>
+.switch {
+  position: relative;
+  display: inherit;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
 <body>
-  <h1>People counter debugging</h1>
-  <div id="recorder">
-    <button id="record">Record</button>
-    <button id="stop">Stop</button>
-    <a id="download"></a>
-    <script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>
-  </div>
+<div class="c-page">
+  <section class="o-row o-row-lg o-row--neutral-xx-dark">
+    <div class="o-section o-section--lg">
+      <div class="o-layout--align-center">
+        <h1 class ="o-layout__item">Debugging Tool</h1>
+      </div>
+      <div class="o-layout o-layout--gutter-lg o-layout--align-center">
+        <div class="o-layout__item u-1-of-2-bp2">
+            <img id="video" src="{{ url_for('video_viewer') }}">
+            <div id="Recorder">
+              <button id="record">Record</button>
+              <button id="stop">Stop</button>
+              <a id="download"></a>
+            </div>
+        </div>
+        <div id ="Controlls" class = "o-layout__item u-1-of-2-bp2">
+          <div class="o-layout">
+            <div class="o-layout__item">
+              <div id="div_videostat">
+                <div style="display:flex;width:300px;justify-content: space-between;">
+                 <h2>Video Stats</h2>
+                  <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <button id="Videostats">Video Stats</button>
+                <input type="color" id="VideoColor">
+              </div>
+              <div id="div_bbox">
+                <div style="display:flex;width:300px;justify-content: space-between;">
+                 <h2>Bounding Box</h2>
+                  <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <button id="Bbox">Boudingbox</button>
+                <input type="color" id="BboxColor">
+              </div>
+            </div>
+            <div class="o-layout__item">
+              <div id="div_accuracy">
+                <div style="display:flex;width:300px;justify-content: space-between;">
+                 <h2>Accuracy</h2>
+                  <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <button id="Accuracy">Accuracy</button>
+                <input type="color" id="AccuracyColor">
+              </div>
+              <div id="div_crossing">
+                <div style="display:flex;width:300px;justify-content: space-between;">
+                 <h2>Crossing</h2>
+                  <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <button id="Crossing">Show Crossing</button>
+                <input type="color" id="CrossingColor">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 
-  <img id="video" src="{{ url_for('video_viewer') }}">
 
-  <div id="Configuration">
 
-    <button id="Videostats">Video Stats</button>
-    <button id="Bbox">Boudingbox</button>
-    <button id="Accuracy">Accuracy</button>
-    <button id="Crossing">Show Crossing</button>
-  </div>
+
+
 </body>
 <script type="text/javascript" src="{{ url_for('static', filename='backend.js') }}"></script>
 </html>
