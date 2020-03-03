@@ -66,7 +66,7 @@ input:checked + .slider:before {
 </style>
 <body>
 <div class="c-page">
-  <section class="o-row o-row-lg o-row--neutral-xx-dark">
+  <section class="o-row o-row-lg o-row--neutral-x-light">
     <div class="o-section o-section--lg">
       <div class="o-layout--align-center">
         <h1 class ="o-layout__item">Debugging Tool</h1>
@@ -83,51 +83,58 @@ input:checked + .slider:before {
         <div id ="Controlls" class = "o-layout__item u-1-of-2-bp2">
           <div class="o-layout">
             <div class="o-layout__item">
-              <div id="div_videostat">
+              <div id="div_videostat" class="u-mb-lg">
                 <div style="display:flex;width:300px;justify-content: space-between;">
                  <h2>Video Stats</h2>
                   <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" id="Videostats">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <button id="Videostats">Video Stats</button>
-                <input type="color" id="VideoColor">
+                <div style="display:flex;width:150px;justify-content: space-between;">
+                  <h3>Color </h3>
+                  <input type="color" id="VideoStatsColor">
+                </div>
               </div>
-              <div id="div_bbox">
+              <div id="div_bbox" class="u-mb-lg">
                 <div style="display:flex;width:300px;justify-content: space-between;">
                  <h2>Bounding Box</h2>
                   <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" id="Bbox">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <button id="Bbox">Boudingbox</button>
-                <input type="color" id="BboxColor">
+                <div style="display:flex;width:150px;justify-content: space-between;">
+                  <h3>Color </h3>
+                  <input type="color" id="BboxColor">
+                </div>
+
               </div>
-            </div>
-            <div class="o-layout__item">
-              <div id="div_accuracy">
+              <div id="div_accuracy" class="u-mb-lg">
                 <div style="display:flex;width:300px;justify-content: space-between;">
                  <h2>Accuracy</h2>
-                  <label class="switch">
+                  <label class="switch" id="Accuracy">
                     <input type="checkbox">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <button id="Accuracy">Accuracy</button>
-                <input type="color" id="AccuracyColor">
+                <div style="display:flex;width:150px;justify-content: space-between;">
+                  <h3>Color </h3>
+                  <input type="color" id="AccuracyColor">
+                </div>
               </div>
-              <div id="div_crossing">
+              <div id="div_crossing" class="u-mb-lg">
                 <div style="display:flex;width:300px;justify-content: space-between;">
                  <h2>Crossing</h2>
                   <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" id="Crossing">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <button id="Crossing">Show Crossing</button>
-                <input type="color" id="CrossingColor">
+                <div style="display:flex;width:150px;justify-content: space-between;">
+                  <h3>Color </h3>
+                  <input type="color" id="CrossingColor">
+                </div>
               </div>
             </div>
           </div>
@@ -136,11 +143,6 @@ input:checked + .slider:before {
     </div>
   </section>
 </div>
-
-
-
-
-
 </body>
 <script type="text/javascript" src="{{ url_for('static', filename='backend.js') }}"></script>
 </html>
