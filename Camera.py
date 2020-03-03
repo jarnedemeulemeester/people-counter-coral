@@ -36,6 +36,11 @@ class RecordingThread(threading.Thread):
 
 
 class VideoCamera(object):
+    """
+    Video camera class:
+    this class all the video processing, the received frames are sent to the web interface.
+    """
+
     def __init__(self, threshold=0.65, inverted=False, bbox=False, crossing=False, accuracy=False, video_status=False,
                  back_color=0, fore_color=(255, 255, 255), bbox_color=(0, 0, 255), crossing_color=(255, 255, 0)):
         # Open a camera
@@ -47,12 +52,15 @@ class VideoCamera(object):
         self.bbox_color = bbox_color
         self.crossing_color = crossing_color
 
+        #flags
         self.flag_inverted = inverted
         self.threshold = threshold
         self.bbox = bbox
         self.accuracy = accuracy
         self.video_status = video_status
         self.crossing = crossing
+
+        #
         self.persons_in = 0
         self.line_trail = dict()
         self.engine = DetectionEngine('model_tflite/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite')
@@ -72,7 +80,6 @@ class VideoCamera(object):
         ret, frame = self.cap.read()
 
         if ret:
-
             t1 = time.time()
             img = Image.fromarray(frame)
             width, height = img.size
@@ -165,7 +172,6 @@ class VideoCamera(object):
 
     def set_crossing_color(self, color):
         self.crossing_color = color
-
 
 def start_record(self):
     self.is_record = True
