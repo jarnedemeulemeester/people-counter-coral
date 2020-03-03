@@ -68,6 +68,22 @@ def toggle_video():
         video_camera.toggle_accuracy()
     return  jsonify({'success':True}), 200, {'ContentType':'application/json'}
 
+@app.route('/color', methods=['POST'])
+def change_color():
+    json = request.get_json()
+    ColorPicker = json['ColorPicker']
+    Color = json['Color']
+
+    if ColorPicker == "VideoStatsFgColor":
+        print("background video stats")
+    elif ColorPicker == "VideoStatsBgColor":
+        print("forgebround video stats")
+    elif ColorPicker == "BboxColor":
+        print("bbox")
+    elif ColorPicker == "CrossingColor":
+        print("crossing")
+    print(str(Color))
+
 
 
 

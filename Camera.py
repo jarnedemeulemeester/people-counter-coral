@@ -82,7 +82,7 @@ class VideoCamera(object):
                     box = obj.bounding_box.flatten().tolist()
                     if self.bbox:
                         cv2.rectangle(frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (0, 255, 255), 5)
-                    if self.bbox and self.accuracy:
+                    #if self.accuracy:
                         cv2.putText(frame, str(obj.score), (int(box[0]) + 10, int(box[1] - 10)),
                                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
                     boxs.append(box)

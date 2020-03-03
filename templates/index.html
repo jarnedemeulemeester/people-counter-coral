@@ -3,6 +3,26 @@
   <title>Debugging Interface</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='screen.css') }}">
 </head>
+
+<script>
+
+function send_color_update(colorpicker, color){
+    console.log("Pressed: " + colorpicker + " with color:" + color);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // alert(xhr.responseText);
+        }
+    }
+    // XMLHttpRequest
+    xhr.open("POST", "/color");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ ColorPicker: toString(colorpicker), Color: toString(color)}));
+};
+
+
+
+</script>
 <style>
 .switch {
   position: relative;
@@ -84,56 +104,60 @@ input:checked + .slider:before {
           <div class="o-layout">
             <div class="o-layout__item">
               <div id="div_videostat" class="u-mb-lg">
-                <div style="display:flex;width:300px;justify-content: space-between;">
+                <div style="display:flex;width:400px;justify-content: space-between;">
                  <h2>Video Stats</h2>
                   <label class="switch">
                     <input type="checkbox" id="Videostats">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <div style="display:flex;width:150px;justify-content: space-between;">
-                  <h3>Color </h3>
-                  <input type="color" id="VideoStatsColor">
+                <div style="display:flex;width:200px;justify-content: space-between;">
+                  <h3>Font color </h3>
+                  <input type="color" id="VideoStatsFgColor" onchange="send_color_update(this.id,this.value);">
+                </div>
+                <div style="display:flex;width:200px;justify-content: space-between;">
+                  <h3>Back color </h3>
+                  <input type="color" id="VideoStatsBgColor" onchange="send_color_update(this.id,this.value);">
                 </div>
               </div>
               <div id="div_bbox" class="u-mb-lg">
-                <div style="display:flex;width:300px;justify-content: space-between;">
+                <div style="display:flex;width:400px;justify-content: space-between;">
                  <h2>Bounding Box</h2>
                   <label class="switch">
                     <input type="checkbox" id="Bbox">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <div style="display:flex;width:150px;justify-content: space-between;">
+                <div style="display:flex;width:200px;justify-content: space-between;">
                   <h3>Color </h3>
-                  <input type="color" id="BboxColor">
+                  <input type="color" id="BboxColor" onchange="send_color_update(this.id,this.value);">
                 </div>
 
               </div>
-              <div id="div_accuracy" class="u-mb-lg">
-                <div style="display:flex;width:300px;justify-content: space-between;">
+              <div id="div_accuracy" class="u-mb-lg" style="display:none">
+                <div style="display:flex;width:400px;justify-content: space-between;">
                  <h2>Accuracy</h2>
                   <label class="switch" id="Accuracy">
                     <input type="checkbox">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <div style="display:flex;width:150px;justify-content: space-between;">
+                <div style="display:flex;width:200px;justify-content: space-between;">
                   <h3>Color </h3>
-                  <input type="color" id="AccuracyColor">
+                  <input type="color" id="AccuracyColor" onchange="send_color_update(this.id,this.value);">
                 </div>
               </div>
               <div id="div_crossing" class="u-mb-lg">
-                <div style="display:flex;width:300px;justify-content: space-between;">
+                <div style="display:flex;width:400px;justify-content: space-between;">
                  <h2>Crossing</h2>
                   <label class="switch">
                     <input type="checkbox" id="Crossing">
                     <span class="slider round"></span>
                   </label>
                 </div>
-                <div style="display:flex;width:150px;justify-content: space-between;">
+                <div style="display:flex;width:200px;justify-content: space-between;">
                   <h3>Color </h3>
-                  <input type="color" id="CrossingColor">
+                  <input type="color" id="CrossingColor" onchange="send_color_update(this.id,this.value);">
                 </div>
               </div>
             </div>

@@ -5,6 +5,12 @@ var buttonCrossing = document.getElementById("Crossing");
 var buttonRecord = document.getElementById("record");
 var buttonStop = document.getElementById("stop");
 
+//color picker input
+var colorForeground = document.getElementbyId("VideoStatsFgColor")
+var colorBackground = document.getElementbyId("VideoStatsBgColor")
+var colorBbox = document.getElementbyId("BboxColor")
+var colorCrossing = document.getElementById("CrossingColor")
+
 buttonStop.disabled = true;
 
 buttonVideoStats.onclick = function() {
@@ -107,4 +113,3 @@ buttonStop.onclick = function() {
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify({ status: "false" }));
 };
-
