@@ -1,7 +1,6 @@
 from flask import Flask, render_template, Response, jsonify, request
 from Camera import VideoCamera
 
-
 app = Flask(__name__)
 
 video_camera = None
@@ -52,7 +51,8 @@ def video_stream():
 
 @app.route('/video_viewer')
 def video_viewer():
-    return Response(video_stream(),mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(video_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 @app.route('/toggle', methods=['POST'])
 def toggle_video():
@@ -66,25 +66,30 @@ def toggle_video():
         video_camera.toggle_crossing()
     elif toggle == "Accuracy":
         video_camera.toggle_accuracy()
-    return  jsonify({'success':True}), 200, {'ContentType':'application/json'}
+    return jsonify({'success': True}), 200, {'ContentType': 'application/json'}
+
 
 @app.route('/color', methods=['POST'])
 def change_color():
+    global video_camera
+    global video_camera
+
+    if video_camera == None:
+        video_camera = VideoCamera()
+
     json = request.get_json()
-    ColorPicker = json['ColorPicker']
+    ColorPicker = json['ColorPicker'].rstrip(" ")
     Color = json['Color']
     if ColorPicker == "VideoStatsFgColor":
-        video_camera.change_video_foreground_color(Color)
+        video_camera.set_video_foreground_color(Color)
     elif ColorPicker == "VideoStatsBgColor":
-        video_camera.change_video_background_color(Color)
+        video_camera.set_video_background_color(Color)
     elif ColorPicker == "BboxColor":
-        video_camera.change_bbox_color(Color)
+        video_camera.set_bbox_color(Color)
     elif ColorPicker == "CrossingColor":
-        video_camera.change_crossing_color(Color)
-    return  jsonify({'success':True}), 200, {'ContentType':'application/json'}
-
-
+        video_camera.set_crossing_color(Color)
+    return jsonify({'success': True}), 200, {'ContentType': 'application/json'}
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True)
+    app.run(host='0.0.0.0', threaded=True, debug=True)

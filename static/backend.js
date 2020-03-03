@@ -13,11 +13,11 @@ var colorCrossing = document.getElementById("CrossingColor")
 
 buttonStop.disabled = true;
 
-buttonVideoStats.onclick = function() {
+buttonVideoStats.onclick = function () {
     console.log("Button VideoStats - pressed")
 
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
         }
@@ -25,13 +25,13 @@ buttonVideoStats.onclick = function() {
     // XMLHttpRequest
     xhr.open("POST", "/toggle");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ toggle: "VideoStats" }));
+    xhr.send(JSON.stringify({toggle: "VideoStats"}));
 };
-buttonBbox.onclick = function() {
+buttonBbox.onclick = function () {
     console.log("Button Bbox - pressed ")
 
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
         }
@@ -39,13 +39,13 @@ buttonBbox.onclick = function() {
     // XMLHttpRequest
     xhr.open("POST", "/toggle");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ toggle: "Bbox" }));
+    xhr.send(JSON.stringify({toggle: "Bbox"}));
 };
-buttonAccuracy.onclick = function() {
+buttonAccuracy.onclick = function () {
     console.log("Button Accuracy - pressed ")
 
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
         }
@@ -53,14 +53,14 @@ buttonAccuracy.onclick = function() {
     // XMLHttpRequest
     xhr.open("POST", "/toggle");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ toggle: "Accuracy" }));
+    xhr.send(JSON.stringify({toggle: "Accuracy"}));
 };
 
-buttonCrossing.onclick = function() {
+buttonCrossing.onclick = function () {
     console.log("Button Crossing - pressed")
 
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
         }
@@ -68,10 +68,10 @@ buttonCrossing.onclick = function() {
     // XMLHttpRequest
     xhr.open("POST", "/toggle");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ toggle: "Crossing" }));
+    xhr.send(JSON.stringify({toggle: "Crossing"}));
 };
 
-buttonRecord.onclick = function() {
+buttonRecord.onclick = function () {
     // var url = window.location.href + "record_status";
     buttonRecord.disabled = true;
     buttonStop.disabled = false;
@@ -83,23 +83,23 @@ buttonRecord.onclick = function() {
 
     // XMLHttpRequest
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
         }
     }
     xhr.open("POST", "/record_status");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ status: "true" }));
+    xhr.send(JSON.stringify({status: "true"}));
 };
 
-buttonStop.onclick = function() {
+buttonStop.onclick = function () {
     buttonRecord.disabled = false;
     buttonStop.disabled = true;
 
     // XMLHttpRequest
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             // alert(xhr.responseText);
 
@@ -111,5 +111,5 @@ buttonStop.onclick = function() {
     }
     xhr.open("POST", "/record_status");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ status: "false" }));
+    xhr.send(JSON.stringify({status: "false"}));
 };
