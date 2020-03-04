@@ -2,11 +2,11 @@ from flask import Flask, render_template, Response, jsonify, request
 from Camera import VideoCamera
 import os
 import logging
-
+from threading import Thread
 
 app = Flask(__name__)
 
-video_camera = None
+
 global_frame = None
 
 
@@ -31,9 +31,6 @@ def device_handler():
 def video_stream():
     global video_camera
     global global_frame
-
-    if video_camera == None:
-        video_camera = VideoCamera()
 
     while True:
         frame = video_camera.get_frame()
@@ -69,12 +66,6 @@ def toggle_video():
 
 @app.route('/color', methods=['POST'])
 def change_color():
-    global video_camera
-    global video_camera
-
-    if video_camera == None:
-        video_camera = VideoCamera()
-
     json = request.get_json()
     ColorPicker = json['ColorPicker'].rstrip(" ")
     Color = json['Color']
@@ -90,4 +81,6 @@ def change_color():
 
 
 if __name__ == '__main__':
+    video_camera = VideoCamera()
     app.run(host='0.0.0.0', threaded=True)
+

@@ -38,28 +38,34 @@ class DataManager():
         self._conn.use(self._database)
         logging.info("Succesfully selected database")
 
-    def send_data(self, table, change):
+    def send_data(self, table, action):
+        if not self._conn:
+            self.make_connection()
         data_dict = {}
-        data_dict["TimeStamp"] = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+        data_dict["TimeStamp"] = r.now()
         previous = self._get_latest_value(table)
-        if change == "+1":
+        if action == "+1":
             data_dict["People"] = previous + 1
         else:
-            data_dict["People"] = previous - 1
-
-        r.table(table).insert()
+            if previous > 0 or not previous == []:
+                data_dict["People"] = previous - 1
+            else:
+                data_dict["People"] = 0
+        r.table(table).insert(data_dict).run(self._conn)
 
     def _get_latest_value(self, table):
-        current_count = 0
-        if self._check_table_exist(table):
-            response = r.table("table").run(self._conn)
-            current_count = response[-1]["People"]
-        else:
-            self._make_table()
-        return current_count
+        if not self._check_table_exist(table):
+            self._make_table(table)
+        result = r.table(table).order_by(r.desc("TimeStamp")).limit(1).run(self._conn)
+        logging.debug(f"Last value: {result}")
+        if result:
+            return result[0]["People"]
+        return 0
 
-    def _check_table_exist(self):
-        raise NotImplemented
+    def _check_table_exist(self, table):
+        logging.info(f"Checking if {table} exists")
+        return table in r.table_list().run(self._conn)
 
-    def _make_table(self):
-        raise NotImplemented
+    def _make_table(self, table):
+        logging.info(f'Creating table {table}')
+        r.table_create(table).run(self._conn)
