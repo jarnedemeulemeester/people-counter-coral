@@ -2,12 +2,20 @@ from rethinkdb import r
 from datetime import datetime
 import time
 import logging
+import os
 
-try:
-    logging.basicConfig(filename='tools/Rethinkdb.log', level=logging.INFO,
-                        format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-except FileNotFoundError:
+if os.getcwd().split('/')[-1] == "tools":
+    if not os.path.exists("Rethinkdb.log"):
+        with open('Rethinkdb', 'a'):
+            pass
     logging.basicConfig(filename='Rethinkdb.log', level=logging.INFO,
+                        format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+else:
+    if not os.path.exists("tools/Rethinkdb.log"):
+        with open('tools/Rethinkdb', 'a'):
+            pass
+    logging.basicConfig(filename='tools/Rethinkdb.log', level=logging.INFO,
                         format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
@@ -22,11 +30,12 @@ class DataManager():
             logging.critical(f"Exception while trying to connect: {ex}")
 
     def make_connection(self):
-        self._conn = r.connect(host=self._host).repl()
+        self._conn = r.connect(host=self._host, port=28015)
         logging.info("Succesfully connected to host")
-        if not self._database in r.db_list().run():
-            r.db_create(self._database).run()
-        self._conn.use(self._database).run()
+        if not self._database in r.db_list().run(self._conn):
+            r.db_create(self._database).run(self._conn)
+            logging.info("Succesfully created database")
+        self._conn.use(self._database)
         logging.info("Succesfully selected database")
 
     def send_data(self, table, change):
