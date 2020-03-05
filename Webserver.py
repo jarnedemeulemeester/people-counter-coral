@@ -1,8 +1,6 @@
 from flask import Flask, render_template, Response, jsonify, request
 from Camera import VideoCamera
 import os
-import logging
-from threading import Thread
 
 app = Flask(__name__)
 
