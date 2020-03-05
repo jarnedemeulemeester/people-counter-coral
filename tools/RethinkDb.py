@@ -27,6 +27,10 @@ create_logging()
 
 
 class DataManager():
+    """
+    This class is responsible to manage all the data transfering to and form the given host with a RethinkDB
+    More info on Rethinkdb can be found here: https://rethinkdb.com/
+    """
 
     def __init__(self, host: str, database: str):
         """

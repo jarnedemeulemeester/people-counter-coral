@@ -18,6 +18,20 @@ class VideoCamera(object):
 
     def __init__(self, threshold=0.65, inverted=False, bbox=False, crossing=False, accuracy=False, video_status=False,
                  back_color=0, fore_color=(255, 255, 255), bbox_color=(0, 0, 255), crossing_color=(255, 255, 0)):
+        """
+        This functoin initializes the VideoCamera class, this class will capture and handle the video stream for the
+        flask webserver (debugging tool)
+        :param threshold: This is used to specify what threshold you want the detection to run on.
+        :param inverted: This is used to invert the order in which the camera is detecting people going in or out
+        :param bbox: This is used as flag to show or hide the boudning boxes
+        :param crossing: This is used as flag to show or hide the crossing line
+        :param accuracy: This is used to show the accuracy (it is currently not implemented)
+        :param video_status: This flag is used to show more video stats.
+        :param back_color: This is used to change the color of the videostats background (it is currently not implemented)
+        :param fore_color: This is used to change the color of the videostats text (also currently not implemented)
+        :param bbox_color: This is used to change the color of the boudning boxes
+        :param crossing_color: This is used to change the color of the corssing line.
+        """
         # Open a camera
         self.cap = cv2.VideoCapture(1)
 
@@ -50,12 +64,23 @@ class VideoCamera(object):
         self.out = None
 
         self.frame = None
-        Thread(target=lambda: self.run_loop()).start()
+        Thread(target=lambda: self._run_loop()).start()
 
     def __del__(self):
+        """
+        In the case that you delete the class instance, it will release the camera so you don't have to completely shut
+        down the flask webserver to regain acces to your camera
+        :return: No return
+        """
         self.cap.release()
 
-    def run_loop(self):
+    def _run_loop(self):
+        """
+        This is the heart of the code, all the video processing happens here. If you want more clarification feel free
+        to check the readme on our github: https://github.com/DemeulemeesterJarne/people-counter (however this is
+        currently still documentation on the outdated concept code)
+        :return: No return
+        """
         while True:
             ret, frame = self.cap.read()
             if ret:
@@ -129,28 +154,68 @@ class VideoCamera(object):
             self.frame = cv2.imencode('.jpg', frame)[1].tostring()
 
     def get_frame(self):
+        """
+        This method is created so you can retreave the data from the video processing loop.
+        :return: The last frame from the loop
+        """
         return self.frame
 
     def toggle_video_status(self):
+        """
+        This method is used to update the video status flag
+        :return: No return
+        """
         self.video_status = not self.video_status
 
     def toggle_bbox(self):
+        """
+        This method is used to update the bounding box flag
+        :return: No return
+        """
         self.bbox = not self.bbox
 
     def toggle_accuracy(self):
+        """
+        This method is used to update the accuracy flag
+        :return:
+        """
         self.accuracy = not self.accuracy
 
     def toggle_crossing(self):
+        """
+        This method is used to update the visual crossing flag
+        :return: No return
+        """
         self.crossing = not self.crossing
 
     def set_video_background_color(self, color):
+        """
+        This method is used to change the video background color
+        :param color: This is the specified BGR color which we want to change to.
+        :return: No return
+        """
         self.video_back_color = color
 
     def set_video_foreground_color(self, color):
+        """
+        This method is used to change the video foreground color
+        :param color: This is the specified BGR color which we want to change to.
+        :return: No return
+        """
         self.video_foreground_color = color
 
     def set_bbox_color(self, color):
+        """
+        This method is used to change the boundingbox color
+        :param color: This is the specified BGR color which we want to change to.
+        :return: No return
+        """
         self.bbox_color = color
 
     def set_crossing_color(self, color):
+        """
+        This method is used to change the corssing color
+        :param color: This is the specified BGR color which we want to change to.
+        :return: No return
+        """
         self.crossing_color = color
