@@ -7,6 +7,7 @@ from tools.CentroidTracker import CentroidTracker
 from tools.RethinkDb import DataManager
 from collections import deque
 from threading import Thread
+from multiprocessing import Process
 
 
 class VideoCamera(object):
@@ -100,23 +101,19 @@ class VideoCamera(object):
                                     line1):
                                 if self.flag_inverted:
                                     self.persons_in += 1
-                                    publish = threading.Thread(
-                                        self.manager.send_data(self.table, "+1"))
+                                    Process(self.manager.send_data(self.table, "+1")).start()
                                 else:
                                     self.persons_in -= 1
-                                    publish = threading.Thread(
-                                        self.manager.send_data(self.table, "-1"))
+                                    Process(self.manager.send_data(self.table, "-1")).start()
 
                             elif self.line_trail[objectID][1][1] < int(line1) and self.line_trail[objectID][0][1] > int(
                                     line1):
                                 if self.flag_inverted:
                                     self.persons_in -= 1
-                                    publish = threading.Thread(
-                                        self.manager.send_data(self.table, "-1"))
+                                    Process(self.manager.send_data(self.table, "-1")).start()
                                 else:
                                     self.persons_in += 1
-                                    publish = threading.Thread(
-                                        self.manager.send_data(self.table, "+1"))
+                                    Process(self.manager.send_data(self.table, "+1")).start()
                     except Exception as Ex:
                         print(Ex)
 

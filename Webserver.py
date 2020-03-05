@@ -6,7 +6,6 @@ from threading import Thread
 
 app = Flask(__name__)
 
-
 global_frame = None
 
 
@@ -83,4 +82,3 @@ def change_color():
 if __name__ == '__main__':
     video_camera = VideoCamera()
     app.run(host='0.0.0.0', threaded=True)
-

@@ -109,14 +109,14 @@
                 <h1 class="o-layout__item">Debugging Tool</h1>
             </div>
             <div class="o-layout o-layout--gutter-lg o-layout--align-center">
-                <div class="o-layout__item u-3-of-5-bp1">
+                <div class="o-layout__item u-1-of-2-bp3">
                     <img id="video" src="{{ url_for('video_viewer') }}">
                     <div id="Recorder">
                         <button id="reboot">Reboot</button>
                         <button id="shutdown">Shutdown</button>
                     </div>
                 </div>
-                <div id="Controlls" class="o-layout__item u-2-of-5-bp1">
+                <div id="Controlls" class="o-layout__item u-1-of-2-bp3">
                     <div class="o-layout">
                         <div class="o-layout__item">
                             <div id="div_videostat" class="u-mb-lg">
@@ -148,7 +148,7 @@
                                 </div>
                                 <div style="display:flex;width:200px;justify-content: space-between;">
                                     <h3>Color </h3>
-                                    <input type="color" id="BboxColor"
+                                    <input type="color" id="BboxColor" value="#ff0000"
                                            onchange="send_color_update(this.id,this.value);">
                                 </div>
 
@@ -163,7 +163,7 @@
                                 </div>
                                 <div style="display:flex;width:200px;justify-content: space-between;">
                                     <h3>Color </h3>
-                                    <input type="color" id="AccuracyColor"
+                                    <input type="color"  id="AccuracyColor"
                                            onchange="send_color_update(this.id,this.value);">
                                 </div>
                             </div>
@@ -177,7 +177,7 @@
                                 </div>
                                 <div style="display:flex;width:200px;justify-content: space-between;">
                                     <h3>Color </h3>
-                                    <input type="color" id="CrossingColor"
+                                    <input type="color" id="CrossingColor" value="#00ffff"
                                            onchange="send_color_update(this.id,this.value);">
                                 </div>
                             </div>
