@@ -11,11 +11,20 @@ global_frame = None
 
 @app.route('/')
 def index():
+    """
+    This is the function that calls the mainpage
+    :return: The render for the start page
+    """
     return render_template('index.html')
 
 
 @app.route('/board_status', methods=['post'])
 def device_handler():
+    """
+    This function is used to give device calls, such as 'Shutdown' and 'Reboot', these can be used in case something is
+    not running smooth
+    :return: Statuscode 200
+    """
     json = request.get_json()
     status = json['status']
 
@@ -28,6 +37,10 @@ def device_handler():
 
 
 def video_stream():
+    """
+    This function will keep the Video streaming
+    :return: No return
+    """
     global video_camera
     global global_frame
 
@@ -45,11 +58,19 @@ def video_stream():
 
 @app.route('/video_viewer')
 def video_viewer():
+    """
+    This function handles the video stream, this will update the video ellement in html
+    :return: Updated webpage
+    """
     return Response(video_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/toggle', methods=['POST'])
 def toggle_video():
+    """
+    This function will handle the flag updates
+    :return: Statuscode 200
+    """
     json = request.get_json()
     toggle = json['toggle']
     if toggle == "VideoStats":
@@ -65,6 +86,10 @@ def toggle_video():
 
 @app.route('/color', methods=['POST'])
 def change_color():
+    """
+    This function will be used to update the color's
+    :return: Statuscode 200
+    """
     json = request.get_json()
     ColorPicker = json['ColorPicker'].rstrip(" ")
     Color = json['Color']
