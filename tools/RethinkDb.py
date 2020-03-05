@@ -1,6 +1,4 @@
 from rethinkdb import r
-from datetime import datetime
-import time
 import logging
 import os
 
