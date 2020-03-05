@@ -103,7 +103,7 @@ class VideoCamera(object):
                             cv2.rectangle(frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
                                           self.bbox_color, 5)
                             # if self.accuracy:
-                            cv2.putText(frame, str(round(obj.score, 2)), (int(box[0]) + 10, int(box[1] - 10)),
+                            cv2.putText(frame, str(round(obj.score, 2)), (int(box[0]) + 10, int(box[1] +30)),
                                         cv2.FONT_HERSHEY_SIMPLEX, 1, self.bbox_color, 2)
                         boxs.append(box)
 
