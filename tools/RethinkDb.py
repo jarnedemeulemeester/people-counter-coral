@@ -64,7 +64,7 @@ class DataManager():
     def send_data(self, table, action):
         """
         This function is used to send data to the database, this will check if the given 'table' exists. If so, it will
-        retreave the latest value and calculate the new one.
+        retrieve the latest value and calculate the new one.
         :param table: The table where your data should be written to
         :param action: The action that should be taken with the data
         :return: No return
@@ -87,7 +87,7 @@ class DataManager():
 
     def _get_latest_value(self, table):
         """
-        This function is only availabe inside the class, it is used to retreave the latest value from a certain table.
+        This function is only available inside the class, it is used to retrieve the latest value from a certain table.
         :param table: The name of the table you want to get the latest value from
         :return: The latest added value for 'people' in this table
         """
@@ -101,7 +101,7 @@ class DataManager():
 
     def _check_table_exist(self, table):
         """
-        This functoin is only available inside the class, it is used to check if the 'table' exists.
+        This function is only available inside the class, it is used to check if the 'table' exists.
         :param table: The name of the table you want to check
         :return: True if the table exists and false if it does not
         """
