@@ -19,18 +19,18 @@ class VideoCamera(object):
     def __init__(self, threshold=0.65, inverted=False, bbox=False, crossing=False, accuracy=False, video_status=False,
                  back_color=0, fore_color=(255, 255, 255), bbox_color=(0, 0, 255), crossing_color=(255, 255, 0)):
         """
-        This functoin initializes the VideoCamera class, this class will capture and handle the video stream for the
-        flask webserver (debugging tool)
+        This function initializes the VideoCamera class, this class will capture and handle the video stream for the
+        flask web server (debugging tool)
         :param threshold: This is used to specify what threshold you want the detection to run on.
         :param inverted: This is used to invert the order in which the camera is detecting people going in or out
-        :param bbox: This is used as flag to show or hide the boudning boxes
+        :param bbox: This is used as flag to show or hide the bounding boxes
         :param crossing: This is used as flag to show or hide the crossing line
         :param accuracy: This is used to show the accuracy (it is currently not implemented)
         :param video_status: This flag is used to show more video stats.
-        :param back_color: This is used to change the color of the videostats background (it is currently not implemented)
-        :param fore_color: This is used to change the color of the videostats text (also currently not implemented)
-        :param bbox_color: This is used to change the color of the boudning boxes
-        :param crossing_color: This is used to change the color of the corssing line.
+        :param back_color: This is used to change the color of the video stats background (it is currently not implemented)
+        :param fore_color: This is used to change the color of the videos tats text (also currently not implemented)
+        :param bbox_color: This is used to change the color of the bounding boxes
+        :param crossing_color: This is used to change the color of the crossing line.
         """
         # Open a camera
         self.cap = cv2.VideoCapture(1)
@@ -69,7 +69,7 @@ class VideoCamera(object):
     def __del__(self):
         """
         In the case that you delete the class instance, it will release the camera so you don't have to completely shut
-        down the flask webserver to regain acces to your camera
+        down the flask web server to regain access to your camera
         :return: No return
         """
         self.cap.release()
@@ -92,7 +92,7 @@ class VideoCamera(object):
                 # Run inference.
                 detections = self.engine.detect_with_image(img, threshold=self.threshold, keep_aspect_ratio=True,
                                                            relative_coord=False, top_k=10,
-                                                           resample=Image.NEAREST)  # BICUBIC
+                                                           resample=Image.NEAREST)
                 boxs = []
 
                 # Display result.
@@ -139,8 +139,10 @@ class VideoCamera(object):
                                 else:
                                     self.persons_in += 1
                                     Process(self.manager.send_data(self.table, "+1")).start()
-                    except Exception as Ex:
-                        print(Ex)
+                    except:
+                        pass
+                    # we don't handle the thrown error since it is not needed, if we would handle it we would only
+                    # waste processing power for something irrelevant
 
                 if self.video_status:
                     frame = cv2.copyMakeBorder(frame, top=0, bottom=48, left=0, right=0, borderType=cv2.BORDER_CONSTANT,
@@ -150,12 +152,12 @@ class VideoCamera(object):
                     cv2.putText(frame, "FPS: %d" % (1. / (time.time() - t1)), (260, height + 32),
                                 cv2.FONT_HERSHEY_SIMPLEX,
                                 1.0, self.video_foreground_color, lineType=cv2.LINE_AA, thickness=2)
-                if self.crossing: cv2.line(frame, (0, line1), (width, line1), (self.crossing_color), 2)
+                if self.crossing: cv2.line(frame, (0, line1), (width, line1), self.crossing_color, 2)
             self.frame = cv2.imencode('.jpg', frame)[1].tostring()
 
     def get_frame(self):
         """
-        This method is created so you can retreave the data from the video processing loop.
+        This method is created so you can retrieve the data from the video processing loop.
         :return: The last frame from the loop
         """
         return self.frame
@@ -206,7 +208,7 @@ class VideoCamera(object):
 
     def set_bbox_color(self, color):
         """
-        This method is used to change the boundingbox color
+        This method is used to change the bounding box color
         :param color: This is the specified BGR color which we want to change to.
         :return: No return
         """
@@ -214,7 +216,7 @@ class VideoCamera(object):
 
     def set_crossing_color(self, color):
         """
-        This method is used to change the corssing color
+        This method is used to change the crossing color
         :param color: This is the specified BGR color which we want to change to.
         :return: No return
         """
