@@ -75,7 +75,7 @@ class DataManager():
         if action == "+1":
             data_dict["People"] = previous + 1
         else:
-            if previous > 0 or not previous == []:
+            if previous > 0:
                 data_dict["People"] = previous - 1
             else:
                 data_dict["People"] = 0
