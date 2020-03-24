@@ -8,6 +8,8 @@ from tools.RethinkDb import DataManager
 from collections import deque
 from threading import Thread
 from multiprocessing import Process
+from dotenv import load_dotenv
+import os
 
 
 class VideoCamera(object):
@@ -32,12 +34,13 @@ class VideoCamera(object):
         :param bbox_color: This is used to change the color of the bounding boxes
         :param crossing_color: This is used to change the color of the crossing line.
         """
+        load_dotenv()
+
         # Open a camera
         self.cap = cv2.VideoCapture(1)
 
         # DataController
-        self.manager = DataManager(host="10.10.20.53", database="person-counter")
-        self.table = "The_Core"
+        self.manager = DataManager(host=os.getenv("DB_HOST"), database="people-counter")
 
         # colors
         self.video_back_color = back_color
@@ -126,19 +129,19 @@ class VideoCamera(object):
                                     line1):
                                 if self.flag_inverted:
                                     self.persons_in += 1
-                                    Process(self.manager.send_data(self.table, "+1")).start()
+                                    Process(self.manager.send_data("+1")).start()
                                 else:
                                     self.persons_in -= 1
-                                    Process(self.manager.send_data(self.table, "-1")).start()
+                                    Process(self.manager.send_data("-1")).start()
 
                             elif self.line_trail[objectID][1][1] < int(line1) and self.line_trail[objectID][0][1] > int(
                                     line1):
                                 if self.flag_inverted:
                                     self.persons_in -= 1
-                                    Process(self.manager.send_data(self.table, "-1")).start()
+                                    Process(self.manager.send_data("-1")).start()
                                 else:
                                     self.persons_in += 1
-                                    Process(self.manager.send_data(self.table, "+1")).start()
+                                    Process(self.manager.send_data("+1")).start()
                     except:
                         pass
                     # we don't handle the thrown error since it is not needed, if we would handle it we would only

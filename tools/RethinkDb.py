@@ -1,6 +1,7 @@
 from rethinkdb import r
 import logging
 import os
+from socket import gethostname
 
 def create_logging():
     """
@@ -58,8 +59,9 @@ class DataManager():
             logging.info("Succesfully created database")
         self._conn.use(self._database)
         logging.info("Succesfully selected database")
+        self._check_device_entry()
 
-    def send_data(self, table, action):
+    def send_data(self, action):
         """
         This function is used to send data to the database, this will check if the given 'table' exists. If so, it will
         retrieve the latest value and calculate the new one.
@@ -69,19 +71,26 @@ class DataManager():
         """
         if not self._conn:
             self.make_connection()
+
+        location = r.table("device").filter({"name": gethostname()}).eq_join("locationId", r.table("location"))
+        table = location.location.name
         data_dict = {}
-        data_dict["TimeStamp"] = r.now()
+        data_dict["timestamp"] = r.now()
         previous = self._get_latest_value(table)
         if action == "+1":
-            data_dict["People"] = previous + 1
+            data_dict["people"] = previous + 1
         else:
             if previous > 0:
-                data_dict["People"] = previous - 1
+                data_dict["people"] = previous - 1
             else:
-                data_dict["People"] = 0
+                data_dict["people"] = 0
         logging.info(f"Sending {data_dict} to db.")
         r.table(table).insert(data_dict).run(self._conn)
 
+
+    def _check_device_entry(self):
+        if len(r.table("device").filter({"name": gethostname()})) == 0:
+            r.table("device").insert({"name": gethostname()}).run(self._conn)
 
     def _get_latest_value(self, table):
         """
@@ -91,10 +100,10 @@ class DataManager():
         """
         if not self._check_table_exist(table):
             self._make_table(table)
-        result = r.table(table).order_by(r.desc("TimeStamp")).limit(1).run(self._conn)
+        result = r.table(table).order_by(r.desc("timestamp")).limit(1).run(self._conn)
         logging.debug(f"Last value: {result}")
         if result:
-            return result[0]["People"]
+            return result[0]["people"]
         return 0
 
     def _check_table_exist(self, table):
