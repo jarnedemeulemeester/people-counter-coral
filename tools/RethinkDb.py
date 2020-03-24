@@ -78,19 +78,21 @@ class DataManager():
         if not self._conn:
             self.make_connection()
 
-        location = r.table("device").filter({"name": gethostname()}).eq_join("locationId", r.table("location"))
-        table = location.location.name
+        location = r.table("device").filter({"name": gethostname()}).limit(1).eq_join("location", r.table("location")).run(self._conn)
+        table = list(location)[0]["location"]["name"]
         data_dict = {}
         data_dict["timestamp"] = r.now()
         previous = self._get_latest_value(table)
         if action == "+1":
-            data_dict["people"] = previous + 1
+            new_n_people = previous + 1
         else:
             if previous > 0:
-                data_dict["people"] = previous - 1
+                new_n_people = previous - 1
             else:
-                data_dict["people"] = 0
+                new_n_people = 0
+        data_dict["people"] = new_n_people
         logging.info(f"Sending {data_dict} to db.")
+        r.table("location").filter({"name": table}).update({"people": new_n_people}).run(self._conn)
         r.table(table).insert(data_dict).run(self._conn)
 
 
@@ -98,16 +100,16 @@ class DataManager():
         if len(r.table("device").filter({"name": gethostname()}).run(self._conn)) == 0:
             r.table("device").insert({"name": gethostname()}).run(self._conn)
 
-    def _get_latest_value(self, table):
+    def _get_latest_value(self, location):
         """
         This function is only available inside the class, it is used to retrieve the latest value from a certain table.
         :param table: The name of the table you want to get the latest value from
         :return: The latest added value for 'people' in this table
         """
-        result = r.table(table).order_by(r.desc("timestamp")).limit(1).run(self._conn)
+        result = r.table("location").filter({"name": location}).run(self._conn)
         logging.debug(f"Last value: {result}")
         if result:
-            return result[0]["people"]
+            return list(result)[0]["people"]
         return 0
 
     def _check_table_exist(self, table):
