@@ -79,7 +79,7 @@ class DataManager():
             self.make_connection()
 
         location = r.table("device").filter({"name": gethostname()}).limit(1).eq_join("location", r.table("location")).run(self._conn)
-        table = list(location)[0]["location"]["name"]
+        table = list(location)[0]["right"]["name"]
         data_dict = {}
         data_dict["timestamp"] = r.now()
         previous = self._get_latest_value(table)
