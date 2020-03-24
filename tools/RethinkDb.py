@@ -59,6 +59,12 @@ class DataManager():
             logging.info("Succesfully created database")
         self._conn.use(self._database)
         logging.info("Succesfully selected database")
+
+        tables = ["device", "location"]
+        for table in tables:
+            if not self._check_table_exist(table):
+                self._make_table(table)
+
         self._check_device_entry()
 
     def send_data(self, action):
@@ -89,7 +95,7 @@ class DataManager():
 
 
     def _check_device_entry(self):
-        if len(r.table("device").filter({"name": gethostname()})) == 0:
+        if len(r.table("device").filter({"name": gethostname()}).run(self._conn)) == 0:
             r.table("device").insert({"name": gethostname()}).run(self._conn)
 
     def _get_latest_value(self, table):
@@ -98,8 +104,6 @@ class DataManager():
         :param table: The name of the table you want to get the latest value from
         :return: The latest added value for 'people' in this table
         """
-        if not self._check_table_exist(table):
-            self._make_table(table)
         result = r.table(table).order_by(r.desc("timestamp")).limit(1).run(self._conn)
         logging.debug(f"Last value: {result}")
         if result:
