@@ -1,1 +1,11 @@
-google-cloud-pubsub
+### Please do not use this file.
+### This file is only here for reference.
+### Run the setup.sh or use the apt utility to install all required packages.
+
+python-dotenv
+Pillow
+Flask
+rethinkdb
+numpy
+scipy
+# opencv-python # Does not work on arm
