@@ -10,17 +10,11 @@ def create_logging():
     :return: No return
     """
     if os.getcwd().split('/')[-1] == "tools":
-        if not os.path.exists("Rethinkdb.log"):
-            with open('Rethinkdb', 'a'):
-                pass
-        logging.basicConfig(filename='Rethinkdb.log', level=logging.INFO,
+        logging.basicConfig(filename='rethinkdb.log', level=logging.INFO,
                             format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
     else:
-        if not os.path.exists("tools/Rethinkdb.log"):
-            with open('tools/Rethinkdb', 'a'):
-                pass
-        logging.basicConfig(filename='tools/Rethinkdb.log', level=logging.INFO,
+        logging.basicConfig(filename='tools/rethinkdb.log', level=logging.INFO,
                             format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 create_logging()
 
