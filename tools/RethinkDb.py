@@ -2,6 +2,7 @@ from rethinkdb import r
 import logging
 import os
 from socket import gethostname
+from threading import Thread
 
 def create_logging():
     """
@@ -34,6 +35,7 @@ class DataManager():
         """
         self._database = database
         self._host = host
+        self._location = None
         try:
             self.make_connection()
         except Exception as ex:
@@ -47,11 +49,13 @@ class DataManager():
         :return: No return
         """
         self._conn = r.connect(host=self._host, port=28015)
+        self._conn2 = r.connect(host=self._host, port=28015)
         logging.info("Succesfully connected to host")
         if not self._database in r.db_list().run(self._conn):
             r.db_create(self._database).run(self._conn)
             logging.info("Succesfully created database")
         self._conn.use(self._database)
+        self._conn2.use(self._database)
         logging.info("Succesfully selected database")
 
         tables = ["device", "location"]
@@ -60,6 +64,8 @@ class DataManager():
                 self._make_table(table)
 
         self._check_device_entry()
+
+        Thread(target=self._update_location).start()
 
     def send_data(self, action):
         """
@@ -72,11 +78,9 @@ class DataManager():
         if not self._conn:
             self.make_connection()
 
-        location = r.table("device").filter({"name": gethostname()}).limit(1).eq_join("location", r.table("location")).run(self._conn)
-        table = list(location)[0]["right"]["name"]
         data_dict = {}
         data_dict["timestamp"] = r.now()
-        previous = self._get_latest_value(table)
+        previous = self._get_latest_value(self._location)
         if action == "+1":
             new_n_people = previous + 1
         else:
@@ -86,13 +90,22 @@ class DataManager():
                 new_n_people = 0
         data_dict["people"] = new_n_people
         logging.info(f"Sending {data_dict} to db.")
-        r.table("location").filter({"name": table}).update({"people": new_n_people}).run(self._conn)
-        r.table(table).insert(data_dict).run(self._conn)
+        r.table("location").filter({"name": self._location}).update({"people": new_n_people}).run(self._conn)
+        r.table(self._location).insert(data_dict).run(self._conn)
 
 
     def _check_device_entry(self):
-        if len(r.table("device").filter({"name": gethostname()}).run(self._conn)) == 0:
+        if r.table("device").filter({"name": gethostname()}).count().run(self._conn) == 0:
             r.table("device").insert({"name": gethostname()}).run(self._conn)
+    
+    def _update_location(self):
+        # Get initial location
+        self._location = list(r.table("device").filter({"name": gethostname()}).limit(1).eq_join("location", r.table("location")).run(self._conn))[0]["right"]["name"]
+        
+        # When the location updates in the db, update the local variable
+        feed = r.table("device").filter({"name": gethostname()}).changes().run(self._conn2)
+        for changes in feed:
+            self._location = r.table("location").get(changes["new_val"]["location"]).run(self._conn2)["name"]
 
     def _get_latest_value(self, location):
         """
