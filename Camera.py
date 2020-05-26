@@ -4,7 +4,7 @@ from PIL import Image
 from timeit import time
 import cv2
 from tools.CentroidTracker import CentroidTracker
-from tools.RethinkDb import DataManager
+from tools.nsdb import DataManager
 from collections import deque
 from threading import Thread
 from multiprocessing import Process
@@ -40,7 +40,7 @@ class VideoCamera(object):
         self.cap = cv2.VideoCapture(1)
 
         # DataController
-        self.manager = DataManager(host=os.getenv("DB_HOST"), database="people-counter")
+        self.manager = DataManager(host=os.getenv('DB_HOST'), port=os.getenv('DB_PORT'), database='pc', namespace='pc', metric='people')
 
         # colors
         self.video_back_color = back_color
@@ -129,19 +129,19 @@ class VideoCamera(object):
                                     line1):
                                 if self.flag_inverted:
                                     self.persons_in += 1
-                                    Process(self.manager.send_data("+1")).start()
+                                    Process(self.manager.send_data(1)).start()
                                 else:
                                     self.persons_in -= 1
-                                    Process(self.manager.send_data("-1")).start()
+                                    Process(self.manager.send_data(-1)).start()
 
                             elif self.line_trail[objectID][1][1] < int(line1) and self.line_trail[objectID][0][1] > int(
                                     line1):
                                 if self.flag_inverted:
                                     self.persons_in -= 1
-                                    Process(self.manager.send_data("-1")).start()
+                                    Process(self.manager.send_data(-1)).start()
                                 else:
                                     self.persons_in += 1
-                                    Process(self.manager.send_data("+1")).start()
+                                    Process(self.manager.send_data(+1)).start()
                     except:
                         pass
                     # we don't handle the thrown error since it is not needed, if we would handle it we would only
