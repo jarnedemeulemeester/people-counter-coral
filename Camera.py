@@ -4,7 +4,7 @@ from PIL import Image
 from timeit import time
 import cv2
 from tools.CentroidTracker import CentroidTracker
-from tools.nsdb import DataManager
+from tools.data_manager import DataManager
 from collections import deque
 from threading import Thread
 from multiprocessing import Process
@@ -40,7 +40,7 @@ class VideoCamera(object):
         self.cap = cv2.VideoCapture(1)
 
         # DataController
-        self.manager = DataManager(host=os.getenv('DB_HOST'), port=os.getenv('DB_PORT'), database='pc', namespace='pc', metric='people')
+        self.manager = DataManager(nsdb_host=os.getenv('NSDB_HOST'), nsdb_port=os.getenv('NSDB_PORT'), redis_host=os.getenv('REDIS_HOST'), redis_port=os.getenv('REDIS_HOST'), database='pc', namespace='pc', metric='people')
 
         # colors
         self.video_back_color = back_color
